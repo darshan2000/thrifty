@@ -92,15 +92,28 @@ class _HomepageState extends State<Homepage> {
                         ),
                         SizedBox(height: width/30,),
                         Container(
-                          padding: EdgeInsets.all(15),
+                          padding: EdgeInsets.only(left: 14,right: 14,top: 14),
                           width: width,
-                          height: height/5.4,
+                          height: height/5.5,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(width/40),
                             
                           ),
-                          child: AppText.Content(text: thoughtProvider.thoughts[index].text),
+                          child: Column(
+                            children: [
+                              Container(
+                                  width: width,
+                                  height: height/7.5,
+                                  child: AppText.Content(text: thoughtProvider.thoughts[index].text)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  AppText.Content(text: '23 minutes ago', color: Colors.blueGrey, size: width/35)
+                                ],
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
