@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thrifty/modules/home/data/services/thought_provider.dart';
+import 'package:thrifty/modules/home/views/widgets/slidablecard.dart';
 import 'package:thrifty/modules/utilities/app_text.dart';
 
 class Homepage extends StatefulWidget {
@@ -9,23 +11,28 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  List<String> imgs = ['one.jpg','two.png', 'three.png','one.jpg','two.png', 'three.png','one.jpg','two.png', 'three.png','one.jpg','two.png', 'three.png','one.jpg','two.png', 'three.png'];
+  List<String> imgs = ['one.jpg', 'two.png', 'three.png'];
+
   @override
   Widget build(BuildContext context) {
     ThoughtProvider thoughtProvider = Provider.of<ThoughtProvider>(context);
     var height = MediaQuery.of(context).size.height;
-    var width =  MediaQuery.of(context).size.width;
+    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.redAccent,
-        child: Icon(Icons.add, color: Colors.white,),
-        onPressed: (){
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        onPressed: () {
           Navigator.pop(context);
         },
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: width/30, right: width/30, top: height/30),
-        child: ListView(
+        padding: EdgeInsets.only(
+            left: width / 30, right: width / 30, top: height / 20),
+        child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -33,96 +40,131 @@ class _HomepageState extends State<Homepage> {
                 Row(
                   children: [
                     Container(
-                      width: width/7, height: width/7 ,
+                      width: width / 7,
+                      height: width / 7,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage('https://images.unsplash.com/photo-1559548331-f9cb98001426?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')
-                        )
-                      ),
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  'https://images.unsplash.com/photo-1559548331-f9cb98001426?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'))),
                     ),
-                    SizedBox(width: width/40,),
-                    AppText.SubHeading(text: 'Good Morning Username', size: width/25)
+                    SizedBox(
+                      width: width / 40,
+                    ),
+                    AppText.SubHeading(
+                        text: 'Good Morning Username', size: width / 25)
                   ],
                 ),
                 Icon(
-                  Icons.message_outlined, color: Colors.redAccent, size: width/10,
+                  Icons.message_outlined,
+                  color: Colors.redAccent,
+                  size: width / 10,
                 )
               ],
             ),
-            SizedBox(height: width/20,),
-            ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (context, index){
-                return SizedBox(height: width/30,);
-              },
-              itemCount: thoughtProvider.thoughts.length,
-                itemBuilder: (context, index){
-                  return Container(
-                    height: height/3.5,
-                    padding: EdgeInsets.all(width/40),
-                    width: width,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
+            SizedBox(
+              height: width / 40,
+            ),
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  // separatorBuilder: (context, index){
+                  //   return SizedBox(height: width/30,);
+                  // },
+                  itemCount: thoughtProvider.thoughts.length,
+                  itemBuilder: (context, index) {
+                    return SlidableWidget(
+                        child: ThoughtCard(index),
+                        onDismissed: (action) =>
+                            dismissSlidableItem(context, index, action),
+                        image: 'assets/images/${imgs[index % 3]}',
+                        index: index);
+                  }),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void dismissSlidableItem(
+      BuildContext context, int index, SlidableAction action) {
+    setState(() {
+      // items.removeAt(index);
+    });
+  }
+
+  Widget ThoughtCard(index) {
+    ThoughtProvider thoughtProvider = Provider.of<ThoughtProvider>(context);
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: EdgeInsets.all(5),
+      child: Container(
+        height: height / 3.5,
+        padding: EdgeInsets.all(width / 50),
+        width: width,
+        decoration: BoxDecoration(
+            color: Colors.blue,
+            image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage('assets/images/${imgs[index % 3]}')),
+            borderRadius: BorderRadius.circular(width / 40)),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: width / 9,
+                  height: width / 9,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage('assets/images/${imgs[index]}')
-                      ),
-                      borderRadius: BorderRadius.circular(width/40)
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: width/9, height: width/9 ,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage('https://images.unsplash.com/photo-1559548331-f9cb98001426?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')
-                                  )
-                              ),
-                            ),
-                            SizedBox(width: width/40,),
-                            AppText.SubHeading(text: '@sarah', size: width/29)
-                          ],
-                        ),
-                        SizedBox(height: width/30,),
-                        Container(
-                          padding: EdgeInsets.only(left: 14,right: 14,top: 14),
-                          width: width,
-                          height: height/5.5,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(width/40),
-                            
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                  width: width,
-                                  height: height/7.5,
-                                  child: AppText.Content(text: thoughtProvider.thoughts[index].text)),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  AppText.Content(text: '23 minutes ago', color: Colors.blueGrey, size: width/35)
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                })
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              'https://images.unsplash.com/photo-1559548331-f9cb98001426?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'))),
+                ),
+                SizedBox(
+                  width: width / 40,
+                ),
+                AppText.SubHeading(text: '@sarah', size: width / 29)
+              ],
+            ),
+            SizedBox(
+              height: width / 30,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 14, right: 14, top: 14),
+              width: width,
+              height: height / 5.5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(width / 40),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                      width: width,
+                      height: height / 7.5,
+                      child: AppText.Content(
+                          text: thoughtProvider.thoughts[index].text)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AppText.Content(
+                          text: '23 minutes ago',
+                          color: Colors.blueGrey,
+                          size: width / 35)
+                    ],
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

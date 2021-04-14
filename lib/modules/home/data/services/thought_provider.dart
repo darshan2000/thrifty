@@ -8,6 +8,7 @@ class ThoughtProvider extends ChangeNotifier{
  List<ThoughtModel> thoughts = List<ThoughtModel>();
 
  addThought(String text){
+   print(text);
    thoughts.add(ThoughtModel(
      text: text,
      timeStamp: DateTime.now().millisecondsSinceEpoch

@@ -11,162 +11,215 @@ class EntryScreen extends StatefulWidget {
 }
 
 class _EntryScreenState extends State<EntryScreen> {
-  List<String> imgs = ['one.jpg','two.png', 'three.png'];
- int count = 0;
- String thought = '';
+  List<String> imgs = ['one.jpg', 'two.png', 'three.png'];
+  int count = 0;
+  var imgIndex;
+  String thought = '';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<bool> isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = [true, false, false];
+    imgIndex = 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     ThoughtProvider thoughtProvider = Provider.of<ThoughtProvider>(context);
-
     var height = MediaQuery.of(context).size.height;
-    var width =  MediaQuery.of(context).size.width;
+    var width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: width/40),
+        padding: EdgeInsets.symmetric(horizontal: width / 40),
         child: ListView(
           children: [
-            SizedBox(height: width/10,),
-            Center(
-              child: AppText.SubHeading(text: 'Your first thought', size: width/20, color: Colors.black),
+            SizedBox(
+              height: width / 10,
             ),
-            SizedBox(height: width/15,),
             Center(
-              child: AppText.SubHeadingS(text: 'What are you thinking about', size: width/23, color: Colors.black),
+              child: AppText.SubHeading(
+                  text: 'Your first thought',
+                  size: width / 20,
+                  color: Colors.black),
             ),
-           // TextBox(),
+            SizedBox(
+              height: width / 15,
+            ),
+            Center(
+              child: AppText.SubHeadingS(
+                  text: 'What are you thinking about',
+                  size: width / 23,
+                  color: Colors.black),
+            ),
+            // TextBox(),
             Padding(
-              padding:  EdgeInsets.symmetric(
-                  vertical: width/20
-              ),
+              padding: EdgeInsets.symmetric(vertical: width / 20),
               child: Container(
-                height: height/3.5,
+                height: height / 3.5,
                 width: width,
                 decoration: BoxDecoration(
                     color: Colors.black,
-                    borderRadius: BorderRadius.circular(width/40),
-                    image: DecorationImage(fit: BoxFit.cover,image: AssetImage('assets/images/one.jpg'))
-                ),
-                padding: EdgeInsets.all(width/19),
+                    borderRadius: BorderRadius.circular(width / 40),
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage('assets/images/${imgs[imgIndex]}'))),
+                padding: EdgeInsets.all(width / 20),
                 child: Container(
-                  height: height/3,
+                  height: height / 3,
                   width: width,
-                  padding: EdgeInsets.all(5),
+                  padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(width/40),
+                    borderRadius: BorderRadius.circular(width / 40),
                   ),
                   child: Form(
                       key: _formKey,
                       child: Column(
-                    children: [
-                      TextFormField(
-                        maxLines: 7,
-                        onChanged: (text){
-                          count = text.length;
-                          thought = text;
-                          setState(() {
-
-                          });
-                        },
-                        decoration: InputDecoration(
-
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          AppText.Content(text: count.toString() +'/75 characters', size: width/32, color: Colors.grey[400] )
+                          TextFormField(
+                            maxLines: 5,
+                            onChanged: (text) {
+                              count = text.length;
+                              thought = text;
+                              setState(() {});
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              AppText.Content(
+                                  text: count.toString() + '/75 characters',
+                                  size: width / 32,
+                                  color: Colors.grey[400])
+                            ],
+                          ),
                         ],
-                      ),
-
-                    ],
-                  )),
+                      )),
                 ),
               ),
             ),
-            SizedBox(height: width/15,),
+            SizedBox(
+              height: width / 15,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: height/15,
-                  width: height/15,
+                  height: height / 15,
+                  width: height / 15,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(width/60),
+                    borderRadius: BorderRadius.circular(width / 60),
                     color: Colors.white,
                   ),
-                  child: Icon(Icons.add, color: Colors.redAccent, size: width/10,),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.redAccent,
+                    size: width / 10,
+                  ),
                 ),
-                SizedBox(width:  width/40,),
+                SizedBox(
+                  width: width / 40,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(3, (index) => Padding(
-                    padding:  EdgeInsets.only(right: width/40),
-                    child: Container(
-                      height: height/15,
-                      width: height/15,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(width/60),
-                          color: Colors.black,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/images/${imgs[index]}')
-                          )
-                      ),
-                    ),
-                  )),
+                  children: List.generate(
+                      3,
+                      (index) => Padding(
+                          padding: EdgeInsets.only(right: width / 40),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSelected = [false, false, false];
+                                isSelected[index] = !isSelected[index];
+                                imgIndex = index;
+                                print(imgIndex);
+                              });
+                            },
+                            child: Container(
+                              height: height / 15,
+                              width: height / 15,
+                              decoration: BoxDecoration(
+                                  border: isSelected[index]
+                                      ? Border.all(
+                                          color: Colors.red[500],
+                                        )
+                                      : Border.all(
+                                          color: Colors.transparent,
+                                        ),
+                                  borderRadius:
+                                      BorderRadius.circular(width / 60),
+                                  color: Colors.black,
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(
+                                          'assets/images/${imgs[index]}'))),
+                            ),
+                          ))),
                 ),
               ],
             ),
-            SizedBox(height: width/9,),
+            SizedBox(
+              height: width / 9,
+            ),
             Center(
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   _formKey.currentState.save();
                   thoughtProvider.addThought(thought);
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Homepage()));
+
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Homepage()));
                 },
                 child: Container(
-                  width: width/3,
-                  height: height/17,
+                  width: width / 3,
+                  height: height / 17,
                   decoration: BoxDecoration(
                       color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(width/20)
-                  ),
+                      borderRadius: BorderRadius.circular(width / 20)),
                   child: Center(
-                    child: AppText.SubHeading(text: 'Match!', color: Colors.white, size: width/22),
+                    child: AppText.SubHeading(
+                        text: 'Match!', color: Colors.white, size: width / 22),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: width/9,),
-            AppText.SubHeading(text: 'Now Trending', size: width/25),
-            SizedBox(height: width/30,),
+            SizedBox(
+              height: width / 9,
+            ),
+            AppText.SubHeading(text: 'Now Trending', size: width / 25),
+            SizedBox(
+              height: width / 30,
+            ),
             GestureDetector(
-              onTap: (){
-              },
+              onTap: () {},
               child: Container(
                 width: width,
-                height: height/2,
+                height: height / 2,
                 child: GridView.count(
-                 crossAxisCount: 3,
+                  crossAxisCount: 3,
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 20,
                   childAspectRatio: 2.2,
-                  children: List.generate(6, (index) => Container(
-                    width: width/3,
-                    height: height/20,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(width/50),
-                      border: Border.all(color: Colors.redAccent)
-
-                    ),
-                    child: Center(child: AppText.Content(text: 'College Classes', color: Colors.redAccent)),
-                  )),
-
+                  children: List.generate(
+                      6,
+                      (index) => Container(
+                            width: width / 3,
+                            height: height / 20,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(width / 50),
+                                border: Border.all(color: Colors.redAccent)),
+                            child: Center(
+                                child: AppText.Content(
+                                    text: 'College Classes',
+                                    color: Colors.redAccent)),
+                          )),
                 ),
               ),
             )
@@ -187,9 +240,8 @@ class _EntryScreenState extends State<EntryScreen> {
       ),
     );
   }
-  bg(int index){
-    if(index == 0){
 
-    }
+  bg(int index) {
+    if (index == 0) {}
   }
 }
